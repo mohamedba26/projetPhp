@@ -56,7 +56,7 @@
         <select id="subcategory" onload="loadValues()" name="subcategory_id">
         </select><br/>
         <textarea name="description" required><?php echo $product->getDescription() ?></textarea><br/>
-        <input type="file" name="files[]" id="files" accept="image/*" required multiple/><br/>
+        <input type="file" name="files[]" id="files" accept="image/*" multiple/><br/>
         <div id="images">
             <?php
                 if(isset($imageController)){
@@ -68,8 +68,8 @@
             ?>
                 <div style="position: relative; display: inline-block;">
                     <input type="hidden" name="oldImages[]" value="<?php echo $image->getPath() ?>"/>
-                    <img src="data:image/jpg;base64,<?php echo base64_encode($data) ?>" alt="image" width="100" height="100"/>
-                    <span style="position: absolute; top: 0; right: 0; cursor: pointer;" onclick="this.parentElement.remove();">&times;</span>
+                    <img src="data:image/jpg;base64,<?php echo base64_encode($data) ?>" width="100" height="100"/>
+                    <span class="oldImages" style="position: absolute; top: 0; right: 0; cursor: pointer;">&times;</span>
                 </div>
             <?php
                 }}
