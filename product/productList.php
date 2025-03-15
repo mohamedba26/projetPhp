@@ -8,11 +8,11 @@
 <body>
     <?php
     require_once "product.controller.php";
+    require_once "../image/image.controller.php";
     $productController = new ProductController();
     if (isset($_POST["add"])) {
         $product = new ProductModel(null, $_POST["libelle"], $_POST["quantite"], $_POST["subcategory_id"], $_POST["description"], $_POST["price"]);
         if($productController->connectionSuccess()){
-            require_once "../image/image.controller.php";
             $productController->addProduct($product);
             $productId=$productController->getConnection()->lastInsertId();
             $imageController = new ImageController($productController->getConnection());
@@ -25,17 +25,40 @@
             echo "check your internet connection";
             exit();
         }
-    } elseif (isset($_POST["update"])) {
+    } elseif (isset($_POST["update"])){
         $product = new ProductModel($_POST["id"], $_POST["libelle"], $_POST["quantite"], $_POST["subcategory_id"], $_POST["description"], $_POST["price"]);
-        if ($productController->connectionSuccess())
+        if ($productController->connectionSuccess()){
             $productController->updateProduct($product);
+            $imageController = new ImageController($productController->getConnection());
+            $productImages = $imageController->getImagesByProductId($_POST["id"]);
+            foreach($productImages as $productImage){
+                $b=false;
+                $i=0;
+                while(!$b && $i<count($_POST["oldImages"])){
+                    if($productImage->getPath()==$_POST["oldImages"][$i])
+                        $b=true;
+                    $i++;
+                }
+                if(!$b)
+                    $imageController->deleteImage($productImage->getPath());
+            }
+            foreach ($_FILES["files"]["name"] as $key => $file){
+                $image = new ImageModel($_POST["id"],$_FILES["files"]["tmp_name"][$key]);
+                $imageController->addImage($image);
+            }
+        }
         else {
             echo "check your internet connection";
             exit();
         }
     } elseif (isset($_POST["delete"])) {
-        if ($productController->connectionSuccess())
+        if ($productController->connectionSuccess()){
+            $imageController = new ImageController($productController->getConnection());
+            $images = $imageController->getImagesByProductId($_POST["id"]);
+            foreach($images as $image)
+                $imageController->deleteImage($image->getPath());
             $productController->deleteProduct($_POST["id"]);
+        }
         else {
             echo "check your internet connection";
             exit();
@@ -49,7 +72,9 @@
         </a>
         <table>
             <tr>
+                <th>id</th>
                 <th>libelle</th>
+                <th>image</th>
                 <th>price</th>
                 <th>quantite</th>
                 <th>description</th>
@@ -60,7 +85,19 @@
             foreach ($products as $product) {
             ?>
                 <tr>
+                    <td><?php echo $product->getId() ?></td>
                     <td><?php echo $product->getLibelle() ?></td>
+                    <td>
+                        <?php
+                        if(!isset($imageController))
+                            $imageController = new ImageController($productController->getConnection());
+                        $image = $imageController->getFirstImageOfProduct($product->getId());
+                        $file=fopen("../images/$image", 'r');
+                        $data = fread($file,filesize("../images/$image"));
+                        fclose($file);
+                        ?>
+                        <img src="data:image/jpg;base64,<?php echo base64_encode($data) ?>" width="100" height="100"/>
+                    </td>
                     <td><?php echo $product->getPrice() ?></td>
                     <td><?php echo $product->getQuantite() ?></td>
                     <td><?php echo $product->getDescription() ?></td>

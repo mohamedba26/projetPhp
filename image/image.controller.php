@@ -31,9 +31,10 @@
         }
 
         public function deleteImage($path){
-            $stmt=$this->con->prepare("delete from image where path=$path");
+            $stmt=$this->con->prepare("delete from image where path='$path'");
             try{
                 $stmt->execute();
+                unlink("../images/$path");
                 return true;
             }
             catch(Exception $e) {
