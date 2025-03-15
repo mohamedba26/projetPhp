@@ -85,4 +85,3 @@ for(i=0;i<oldImagesSpan.length;i++){
             document.getElementById("files").removeAttribute("required");
     });
 }
-
