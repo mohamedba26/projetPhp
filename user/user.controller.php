@@ -1,5 +1,6 @@
 <?php
     require_once 'user.model.php';
+    require_once "../DBConnection.php";
     class UserController {
         private $con;
 
@@ -13,16 +14,12 @@
         }
 
         public function login($userModel) {
-            $stmt=$this->con->prepare("select salt,password from user where email=?");
-            $stmt->bind_param($userModel->getEmail());
-            $result=$stmt->execute();
-            if($result){
-                $result=$result->fetch(PDO::FETCH_ASSOC);
+            $result=$this->con->query("select salt,password from user where email='{$userModel->getEmail()}'");
+            if($result=$result->fetch(PDO::FETCH_ASSOC)){
                 if(password_verify($userModel->getPassword().$result["salt"],$result["password"])){
                     $token = bin2hex(random_bytes(32));
                     setcookie("auth_token", $token);
-                    $stmt=$this->con->prepare("update user set token=? where email=?");
-                    $stmt->bind_param($token,$userModel->getEmail());
+                    $stmt=$this->con->prepare("update user set token='$token' where email='{$userModel->getEmail()}'");
                     try {
                         $stmt->execute();
                         return 0;
@@ -42,8 +39,12 @@
         public function register($userModel) {
             $salt = bin2hex(random_bytes(32));
             $hashedPassword = password_hash($userModel->getPassword().$salt,PASSWORD_DEFAULT);
-            $stmt = $this->con->prepare("INSERT INTO user(email,password,salt,num_tel,adresse) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param($userModel->getEmail(), $hashedPassword, $salt, $userModel->getNum_tel(), $userModel->getAdresse(),1);
+            $stmt = $this->con->prepare("INSERT INTO user(email,password,salt,num_tel,adresse) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bindValue(1, $userModel->getEmail());
+            $stmt->bindValue(2, $hashedPassword);
+            $stmt->bindValue(3, $salt);
+            $stmt->bindValue(4, $userModel->getNum_tel());
+            $stmt->bindValue(5, $userModel->getAdresse());
             try {
                 $stmt->execute();
                 return true;
@@ -81,29 +82,41 @@
 
         public function getUserByToken(){
             $token = $_COOKIE["auth_token"];
-            $stmt = $this->con->prepare("SELECT email,role FROM user WHERE token = '$token'");
-            $stmt->bind_param($token);
-            try{
-                $result=$stmt->execute();
-                $userModel=$result->setFetchMode(PDO::FETCH_CLASS, "UserModel");
-                return $userModel;
+            $result = $this->con->query("SELECT email,role FROM user WHERE token = '$token'");
+            $result->setFetchMode(PDO::FETCH_CLASS, "UserModel");
+            if($result)
+                return $result->fetch();
+            else
+                return false;
+        }
+
+        public function logout(){
+            $token = $_COOKIE["auth_token"];
+            $userModel=$this->getUserByToken($token);
+            $stmt = $this->con->prepare("update user set token='' where email=?");
+            $stmt->bindValue(1,$userModel->getEmail());
+            try {
+                $stmt->execute();
+                setcookie("auth_token","",time());
+                return true;
             }
             catch(Exception $e) {
                 return false;
             }
         }
 
-        public function deconnect(){
-            $token = $_COOKIE["auth_token"];
-            $userModel=$this->getUserByToken($token);
-            $stmt = $this->con->prepare("update user set token='' where email=?");
-            $stmt->bind_param($userModel->getEmail());
+        public function getRoleByEmail($email){
+            $stmt = $this->con->prepare("SELECT role FROM user WHERE email = ?");
+            $stmt->bindValue(1, $email);
             try {
                 $stmt->execute();
-                unset($_COOKIE["auth_token"]);
-                return true;
-            }
-            catch(Exception $e) {
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($result) {
+                    return $result['role'];
+                } else {
+                    return false;
+                }
+            } catch (Exception $e) {
                 return false;
             }
         }
