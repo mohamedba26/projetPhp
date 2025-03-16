@@ -19,6 +19,7 @@
 
 <body>
     <?php
+    require_once "../navbars/clientNavBar.php";
     require_once "product.controller.php";
     require_once "product.model.php";
     require_once "../image/image.controller.php";
@@ -30,7 +31,12 @@
         <div class="row container py-5 col-lg-12" style="margin: 0 auto;">
             <?php
             if ($productController->connectionSuccess()) {
-                $products = $productController->getProducts();
+                if (isset($_GET["categoryId"]))
+                    $products = $productController->getProductsByCategory($_GET["categoryId"]);
+                elseif (isset($_GET["subCategoryId"]))
+                    $products = $productController->getProductsBySubCategory($_GET["subCategoryId"]);
+                else
+                    $products = $productController->getProducts();
                 foreach ($products as $product) {
                     if (!isset($imageController)) {
                         $imageController = new ImageController($productController->getConnection());

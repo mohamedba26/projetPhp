@@ -19,10 +19,23 @@
 
 <body>
     <?php
-    require_once "product.controller.php";
-    require_once "../image/image.controller.php";
-    ?>
-    <?php
+    if (!isset($_COOKIE["auth_token"])) {
+        header("location:../product/ClientProductList.php");
+        exit();
+    } else {
+        require_once "../user/user.controller.php";
+        require_once "../user/user.model.php";
+        require_once "../navbars/adminNavBar.php";
+        require_once "../navbars/adminNavBar.php";
+        require_once "product.controller.php";
+        require_once "../image/image.controller.php";
+        $userController = new UserController();
+        $userModel = $userController->getUserByToken();
+        if ($userModel->getRole() == 1) {
+            header("location:../product/ClientProductList.php");
+            exit();
+        }
+    }
     $productController = new ProductController();
     if (isset($_POST["add"])) {
         $product = new ProductModel(null, $_POST["libelle"], $_POST["quantite"], $_POST["subcategory_id"], $_POST["description"], $_POST["price"]);

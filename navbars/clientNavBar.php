@@ -10,7 +10,7 @@ $categoryController = new CategoryController();
         <a
             class="navbar-brand text-success logo h1 align-self-center"
             href="index.html">
-            AdminNav
+            Zay
         </a>
 
         <button
@@ -31,13 +31,16 @@ $categoryController = new CategoryController();
                 <ul
                     class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../product/productList.php">Products</a>
+                        <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../category/categoryList.php">Categories</a>
+                        <a class="nav-link" href="about.html">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../subcategory/subcategoryList.php">SubCategories</a>
+                        <a class="nav-link" href="../product/ClientProductList.php">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
                     </li>
                     <li class="nav-item dropdown">
                         <div class="nav-link dropdown-toggle" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -51,7 +54,7 @@ $categoryController = new CategoryController();
                     </li>
                 </ul>
             </div>
-            <div class="navbar align-self-center d-flex">
+            <div class="navbar align-self-center d-flex mr-8">
                 <!-- Search Input (Mobile) -->
                 <div class="d-lg-none flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
                     <div class="input-group">
@@ -77,8 +80,8 @@ $categoryController = new CategoryController();
                 <div class="nav-icon position-relative text-decoration-none dropdown" onclick="showThings()">
                     <i class="fa fa-fw fa-user text-dark mr-3"></i>
                     <ul class="dropdown-menu dropdown-menu-end" id="userActions" aria-labelledby="userDropdown" style="display: none;">
-                        <li><a class="dropdown-item" href="../user/changeInformation.php">Change Information</a></li>
-                        <li><a class="dropdown-item" href="../user/changePassword.php">Change Password</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="handleChangeInfo()">Change Information</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="handleChangePassword()">Change Password</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

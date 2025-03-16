@@ -9,6 +9,21 @@
 
 <body>
     <?php
+    if (!isset($_COOKIE["auth_token"])) {
+        header("location:../product/ClientProductList.php");
+        exit();
+    } else {
+        require_once "../user/user.controller.php";
+        require_once "../user/user.model.php";
+        require_once "../category/category.controller.php";
+        require_once "../navbars/adminNavBar.php";
+        $userController = new UserController();
+        $userModel = $userController->getUserByToken();
+        if ($userModel->getRole() == 1) {
+            header("location:../product/ClientProductList.php");
+            exit();
+        }
+    }
     if (isset($_GET["id"])) {
         require_once "product.controller.php";
         $productController = new ProductController();

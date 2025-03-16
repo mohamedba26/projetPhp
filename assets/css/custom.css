@@ -1,3 +1,38 @@
 /*
 Custom Css
 */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 200px;
+}
+
+.dropdown-submenu {
+    display: none;
+    position: absolute;
+    left: 210px; /* Offset to the right of the main dropdown */
+    top: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 200px;
+}
+
+.dropdown-menu li, .dropdown-submenu li {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.dropdown-menu li:hover, .dropdown-submenu li:hover {
+    background-color: #f1f1f1;
+}
