@@ -33,7 +33,7 @@
             }
         }
     ?>
-    <form method="post" action="register.php">
+    <form method="post" id="form" action="register.php">
         <label for="email">email:</label>
         <input type="email" name="email" required><br>
         <label for="num_tel">Phone Number:</label>
@@ -44,9 +44,9 @@
         <input type="password" id="password" name="password" required><br>
         <label for="verif">verify Password:</label>
         <input type="password" id="verif" required><br>
-        <input type="submit" value="Register" id="register" onsubmit="return verif()">
+        <input type="submit" value="Register">
     </form>
-    <script src="../scripts/register.js"></script>
     <script src="../scripts/script.js"></script>
+    <script src="../scripts/register.js"></script>
 </body>
 </html>
