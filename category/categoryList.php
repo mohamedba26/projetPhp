@@ -15,7 +15,6 @@
             }
             elseif(isset($_POST["add"])){
                 $categoryController->addCategory(new CategoryModel(null,$_POST["category_name"]));
-
             }
             elseif(isset($_POST["delete"])){
                 $categoryController->deleteCategory($_POST["id"]);

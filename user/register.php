@@ -9,15 +9,44 @@
     <?php
         require_once "user.model.php";
         require_once "user.controller.php";
-        if(isset($_POST["email"])){
+        if(isset($_COOKIE["auth_token"])){
             $userController=new UserController();
-            $userModel=new UserModel(isset($_POST["email"]),isset($_POST["password"]));
-            $result=$userController->login($userModel);
-            $userModel=$userController->getUserByToken();
-            if($userModel->getRole()==0){
+            if($userController->connectionSuccess()){
+                $userModel=$userController->getUserByToken();
+                if($userModel->getRole()==0){
 
+                }
+                else{
+
+                }
+            }
+            else{
+                echo "check your internet connection";
+                exit();
+            }
+        }
+        if(isset($_POST["email"])){
+            $userController = new UserController();
+            if($userController->register(new UserModel($_POST["email"], $_POST["password"],null, $_POST["num_tel"], $_POST["adresse"]))){
+                header("location:login.php");
+                exit();
             }
         }
     ?>
+    <form method="post" action="register.php">
+        <label for="email">email:</label>
+        <input type="email" name="email" required><br>
+        <label for="num_tel">Phone Number:</label>
+        <input type="text" name="num_tel" required><br>
+        <label for="adresse">Address:</label>
+        <input type="text" name="adresse"><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <label for="verif">verify Password:</label>
+        <input type="password" id="verif" required><br>
+        <input type="submit" value="Register" id="register" onsubmit="return verif()">
+    </form>
+    <script src="../scripts/register.js"></script>
+    <script src="../scripts/script.js"></script>
 </body>
 </html>
