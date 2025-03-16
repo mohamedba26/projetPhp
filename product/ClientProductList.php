@@ -23,11 +23,11 @@
     require_once "product.model.php";
     require_once "../image/image.controller.php";
     require_once "../image/image.model.php";
-    $productController=new productController();
+    $productController = new productController();
     if ($productController->connectionSuccess()) {
         $products = $productController->getProducts();
     ?>
-        <div class="row container py-5 col-lg-6">
+        <div class="row container py-5 col-lg-12" style="margin: 0 auto;">
             <?php
             if ($productController->connectionSuccess()) {
                 $products = $productController->getProducts();
@@ -46,7 +46,6 @@
                                 <img class="card-img rounded-0 img-fluid" src="data:image/jpg;base64,<?php echo base64_encode($data); ?>" alt="<?php echo $product->getLibelle(); ?>">
                                 <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                     <ul class="list-unstyled">
-                                        <li><a class="btn btn-success text-white" href="shop-single.html"><i class="far fa-heart"></i></a></li>
                                         <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
                                         <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
                                     </ul>

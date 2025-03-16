@@ -1,15 +1,22 @@
-function categoryClick(){
+function loadCategories() {
     const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-      document.getElementById("category").innerHTML =this.responseText;
-    }
-    var idElement=document.getElementById("id");
-    if(idElement==null)
-        xhttp.open("GET", "categoryList.php", true);
+    xhttp.onload = function () {
+        document.getElementById("category").innerHTML = this.responseText;
+    };
+    xhttp.open("GET", "categoryList.php", true);
     xhttp.send();
-    if(document.getElementById("category").style.display=="block")
-        document.getElementById("category").style.display="none";
-    else
-        document.getElementById("category").style.display="block";
 }
-document.getElementById("categoriesDropdown").addEventListener("click", function(){categoryClick()});
+
+// Show categories on hover
+document.getElementById("categoriesDropdown").addEventListener("mouseover", function () {
+    // Load categories if not already loaded
+    if (document.getElementById("category").innerHTML.trim() === "") {
+        loadCategories();
+    }
+    document.getElementById("category").style.display = "block";
+});
+
+// Hide categories when mouse leaves
+document.getElementById("categoriesDropdown").addEventListener("mouseout", function () {
+    document.getElementById("category").style.display = "none";
+});

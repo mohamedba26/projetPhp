@@ -66,10 +66,11 @@
                         <li class="nav-item dropdown">
                             <div class="nav-link dropdown-toggle" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Categories
-                            </div>
-                            <ul class="dropdown-menu" id="category" aria-labelledby="categoriesDropdown">
+                                <ul class="dropdown-menu" id="category" aria-labelledby="categoriesDropdown">
 
-                            </ul>
+                                </ul>
+                            </div>
+
                         </li>
                     </ul>
                 </div>
