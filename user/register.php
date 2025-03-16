@@ -14,10 +14,12 @@
             if($userController->connectionSuccess()){
                 $userModel=$userController->getUserByToken();
                 if($userModel->getRole()==0){
-
+                    header("location:../product/productList.php");
+                    exit();
                 }
                 else{
-
+                    header("location:../product/clientProductList.php");
+                    exit();
                 }
             }
             else{
@@ -37,7 +39,7 @@
         <label for="email">email:</label>
         <input type="email" name="email" required><br>
         <label for="num_tel">Phone Number:</label>
-        <input type="text" name="num_tel" required><br>
+        <input type="tel" name="num_tel" required><br>
         <label for="adresse">Address:</label>
         <input type="text" name="adresse"><br>
         <label for="password">Password:</label>

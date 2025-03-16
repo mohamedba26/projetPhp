@@ -14,10 +14,12 @@
             if($userController->connectionSuccess()){
                 $userModel=$userController->getUserByToken($_COOKIE["auth_token"]);
                 if($userModel->getRole()==0){
-                    echo "ccc";
+                    header("location:../product/productList.php");
+                    exit();
                 }
                 else{
-                    echo "ddd"; 
+                    header("location:../product/clientProductList.php");
+                    exit();
                 }
             }
             else{
@@ -31,10 +33,12 @@
                 $result=$userController->login(new UserModel($_POST["email"],$_POST["password"]));
                 $role=$userController->getRoleByEmail($_POST["email"]);
                 if($role==0){
-                    echo "aaa";
+                    header("location:../product/productList.php");
+                    exit();
                 }
                 else{
-                    echo "bbb"; 
+                    header("location:../product/clientProductList.php");
+                    exit(); 
                 }
             }
             else{

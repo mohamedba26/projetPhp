@@ -56,7 +56,9 @@
 
         public function updateInformation($userModel) {
             $stmt=$this->con->prepare("update user set num_tel=?, adresse=? where email=?");
-            $stmt->bind_param($userModel->getNum_tel(), $userModel->getAdresse(), $userModel->getEmail());
+            $stmt->bindValue(1, $userModel->getNum_tel());
+            $stmt->bindValue(2, $userModel->getAdresse());
+            $stmt->bindValue(3, $userModel->getEmail());
             try {
                 $stmt->execute();
                 return true;
@@ -66,23 +68,31 @@
             }
         }
 
-        public function changePassword($userModel){
-            $salt = bin2hex(random_bytes(32));
-            $hashedPassword = password_hash($userModel->getPassword().$salt,PASSWORD_DEFAULT);
-            $stmt = $this->con->prepare("update user set password=?, salt=? where email=?");
-            $stmt->bind_param($hashedPassword, $salt, $userModel->getEmail());
-            try {
-                $stmt->execute();
-                return true;
+        public function changePassword($userModel,$oldPassword){
+            $result=$this->con->query("select salt,password from user where email='{$userModel->getEmail()}'");
+            $result=$result->fetch(PDO::FETCH_ASSOC);
+            if(password_verify($oldPassword.$result["salt"],$result["password"])){
+                $salt = bin2hex(random_bytes(32));
+                $hashedPassword = password_hash($userModel->getPassword().$salt,PASSWORD_DEFAULT);
+                $stmt = $this->con->prepare("update user set password=?, salt=? where email=?");
+                $stmt->bindValue(1, $hashedPassword);
+                $stmt->bindValue(2, $salt);
+                $stmt->bindValue(3, $userModel->getEmail());
+                try {
+                    $stmt->execute();
+                    return 0;
+                }
+                catch(Exception $e) {
+                    return 1;
+                }
             }
-            catch(Exception $e) {
-                return false;
-            }
+            else
+                return 2;
         }
 
         public function getUserByToken(){
             $token = $_COOKIE["auth_token"];
-            $result = $this->con->query("SELECT email,role FROM user WHERE token = '$token'");
+            $result = $this->con->query("SELECT email,num_tel,adresse,role FROM user WHERE token = '$token'");
             $result->setFetchMode(PDO::FETCH_CLASS, "UserModel");
             if($result)
                 return $result->fetch();
